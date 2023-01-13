@@ -1,10 +1,10 @@
 /**
- * Custom blocks
+ * LINKIECODE EXTENSION BLOCKS
  */
-//% weight=100 color=#3ADADA icon="LC"
+//% color=#5C97BB icon="\uf1e0" block="LINKIECODE"
 
-namespace custom {
-    export enum Move {
+namespace LINKIECODE {
+    export enum PetAction {
         //% block="Rest"
         Rest,
         //% block="Sit"
@@ -17,9 +17,52 @@ namespace custom {
         Walk
     }
 
-    //% blockId=show_moves
-    //% block="$first"
-    export function moves(first: Move){
+    export enum BotAction {
+        //% block="Forward"
+        Forward,
+        //% block="Backward"
+        Backward,
+        //% block="Turn Left"
+        Left,
+        //% block="Turn Right"
+        Right
+    }
 
+    export enum CarAction {
+        //% block="Forward"
+        Forward,
+        //% block="Backward"
+        Backward,
+        //% block="Turn Left"
+        Left,
+        //% block="Turn Right"
+        Right
+    }
+
+    export enum HomeAction {
+        //% block="Open"
+        Open,
+        //% block="Close"
+        Close
+    }
+
+    //% block="Robotic Pet|$first"
+    export function RoboticPet(first: PetAction){
+        
+    }
+
+    //% block="Boxy Bot|$first"
+    export function BoxyBot(first: BotAction) {
+        
+    }
+
+    //% block="Smart Car|$first"
+    export function SmartCar(first: CarAction) {
+        
+    }
+
+    //% block="Smart Home|$first"
+    export function SmartHome(first: HomeAction) {
+        
     }
 }
