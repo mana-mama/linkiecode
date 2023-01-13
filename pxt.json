@@ -4,7 +4,8 @@
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "Dog - Sender": "github:ppoks/dog-sender#master"
     },
     "files": [
         "main.blocks",
