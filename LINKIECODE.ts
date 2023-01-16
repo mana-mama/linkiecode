@@ -378,4 +378,19 @@ namespace LINKIECODE {
             i++;
         }
     }
+
+    function TailWhip() {
+        if (Math.randomBoolean) {
+            let i = 0;
+            while (i < 4) {
+                ServoBot(Servos.S5, 20);
+                basic.pause(200);
+                ServoBot(Servos.S5, 70);
+                basic.pause(200);
+                i++
+            }
+        } else {
+            basic.pause(1600)
+        }
+    }
 }
