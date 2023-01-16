@@ -29,7 +29,11 @@ namespace LINKIECODE {
         //% block="Dance"
         Dance,
         //% block="Tail Whip"
-        TailWhip
+        TailWhip,
+        //% block="Sending"
+        Sending,
+        //% block="Collecting"
+        Collecting
     }
 
     export enum BotAction {
@@ -80,6 +84,10 @@ namespace LINKIECODE {
             break;
         }
     }
+    
+    let Sending = 0
+    let Ready = 0
+    let Signal = 0
 
     export enum Servos {
         S1 = 0x01,
@@ -116,6 +124,12 @@ namespace LINKIECODE {
                 break;
             case PetAction.TailWhip:
                 TailWhip();
+                break;
+            case PetAction.Sending:
+                SendingSignal();
+                break;
+            case PetAction.Collecting:
+                CollectSignal();
                 break;
         }
     }
@@ -399,5 +413,42 @@ namespace LINKIECODE {
         } else {
             basic.pause(1600)
         }
+    }
+
+    function SendingSignal() {
+        if (Ready == 0) {
+            Ready = 1
+        }
+    }
+
+    function CollectSignal() {
+    basic.pause(500)
+    if (Ready == 1) {
+        music.playTone(988, music.beat(BeatFraction.Eighth))
+        if (input.acceleration(Dimension.Y) > 300) {
+            Sending += 1
+        } else if (input.acceleration(Dimension.Y) < -300) {
+            Sending += 2
+        } else if (input.acceleration(Dimension.X) < -300) {
+            Sending += 3
+        } else if (input.acceleration(Dimension.X) > 300) {
+            Sending += 4
+        } else if (input.acceleration(Dimension.Z) < -300) {
+            Sending += 1
+        } else if (input.acceleration(Dimension.Z) > 300) {
+            Sending += 2
+        }
+        Signal += 1
+        if (Signal == 1) {
+            Sending = Sending * 10
+        }
+        if (Signal == 2) {
+            radio.sendNumber(Sending)
+            basic.showNumber(Sending)
+            Ready = 0
+            Signal = 0
+            Sending = 0
+        }
+    }
     }
 }
