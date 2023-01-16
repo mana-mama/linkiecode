@@ -25,7 +25,9 @@ namespace LINKIECODE {
         //% block="Hello"
         Hello,
         //% block="Walk"
-        Walk
+        Walk,
+        //% block="Dance"
+        Dance
     }
 
     export enum BotAction {
@@ -66,36 +68,67 @@ namespace LINKIECODE {
         Inches
     }
 
-
-
-
-    //% block="Calibrate Servo|$first"
+    //% block="Calibrate Servo|$mode"
     //% weight=300
-    export function Calibrate(first: ToyMode) {
-
+    export function Calibrate(mode: ToyMode) {
+        switch (mode) {
+            case ToyMode.RoboticPet:
+            PetRest();
+            break;
+        }
     }
 
-    //% block="Robotic Pet|$first"
+    export enum Servos {
+        S1 = 0x01,
+        S2 = 0x02,
+        S3 = 0x03,
+        S4 = 0x04,
+        S5 = 0x05,
+        S6 = 0x06,
+        S7 = 0x07,
+        S8 = 0x08,
+    }
+
+    //% block="Robotic Pet|$action"
     //% weight=180
-    export function RoboticPet(first: PetAction){
-        
+    export function RoboticPet(action: PetAction){
+        switch (action) {
+            case PetAction.Rest:
+                PetRest();
+                break;
+            case PetAction.Sleep:
+                PetSleep();
+                break;
+            case PetAction.Sit:
+                PetSit();
+                break;
+            case PetAction.Hello:
+                PetHello();
+                break;
+            case PetAction.Walk:
+                PetWalk();
+                break;
+            case PetAction.Dance:
+                PetDance();
+                break;
+        }
     }
 
-    //% block="Boxy Bot|$first"
+    //% block="Boxy Bot|$action"
     //% weight=200
-    export function BoxyBot(first: BotAction) {
+    export function BoxyBot(action: BotAction) {
         
     }
 
-    //% block="Smart Car|$first"
+    //% block="Smart Car|$action"
     //% weight=130
-    export function SmartCar(first: CarAction) {
+    export function SmartCar(action: CarAction) {
         
     }
 
-    //% block="Smart Home|$first"
+    //% block="Smart Home|$action"
     //% weight=100
-    export function SmartHome(first: HomeAction) {
+    export function SmartHome(action: HomeAction) {
         
     }
 
@@ -176,5 +209,173 @@ namespace LINKIECODE {
         buf[3] = off & 0xff;
         buf[4] = (off >> 8) & 0xff;
         pins.i2cWriteBuffer(PCA9685_ADDRESS, buf);
+    }
+
+    function ServoBot(index: Servos, degree: number): void {
+        if (!initializedPCA9685) {
+            initPCA9685();
+        }
+        // 50hz: 20,000 us
+        let v_us = (degree * 1800) / 180 + 600; // 0.6 ~ 2.4
+        let value = (v_us * 4096) / 20000;
+        setPwm(index + 7, 0, value);
+    }
+
+    function PetRest() {
+        ServoBot(Servos.S1, 90);
+        ServoBot(Servos.S2, 90);
+        ServoBot(Servos.S3, 90);
+        ServoBot(Servos.S4, 90);
+    }
+
+    function PetSit() {
+        PetRest();
+        basic.pause(100);
+        ServoBot(Servos.S3, 180);
+        ServoBot(Servos.S4, 0);
+        basic.pause(100);
+    }
+
+    function PetSleep() {
+        ServoBot(Servos.S1, 0);
+        basic.pause(100);
+        ServoBot(Servos.S2, 180);
+        basic.pause(100);
+        ServoBot(Servos.S3, 180);
+        basic.pause(100);
+        ServoBot(Servos.S4, 0);
+        basic.pause(100);
+    }
+
+    function PetHello() {
+        PetRest();
+        basic.pause(100);
+        ServoBot(Servos.S3, 180);
+        ServoBot(Servos.S4, 0);
+        basic.pause(250);
+        ServoBot(Servos.S1, 0);
+        basic.pause(250);
+        let i = 0;
+        while (i < 3) {
+            ServoBot(Servos.S1, 45);
+            basic.pause(200);
+            ServoBot(Servos.S1, 0);
+            basic.pause(200);
+            i++;
+        }
+        basic.pause(250);
+        ServoBot(Servos.S1, 90)
+        basic.pause(250);
+        ServoBot(Servos.S2, 180)
+        basic.pause(250);
+        i = 0;
+        while (i < 3) {
+            ServoBot(Servos.S2, 180);
+            basic.pause(200);
+            ServoBot(Servos.S2, 135);
+            basic.pause(200);
+            i++;
+        }
+        basic.pause(250);
+        PetRest();
+    }
+
+    function PetWalk() {
+        PetRest();
+        let i = 0;
+        while (i < 10) {
+            ServoBot(Servos.S1, 135);
+            ServoBot(Servos.S2, 135);
+            ServoBot(Servos.S3, 45);
+            ServoBot(Servos.S4, 45);
+            basic.pause(500);
+            ServoBot(Servos.S1, 45);
+            ServoBot(Servos.S2, 45);
+            ServoBot(Servos.S3, 135);
+            ServoBot(Servos.S4, 135);
+            basic.pause(500);
+            i++;
+        }
+        PetRest();
+
+    }
+
+    function PetDance() {
+        PetRest();
+        Dance_1();
+        Dance_2();
+        Dance_1();
+        Dance_3();
+        Dance_1();
+    }
+
+    function Dance_1() {
+        ServoBot(Servos.S1, 45);
+        ServoBot(Servos.S2, 135);
+        ServoBot(Servos.S3, 135);
+        ServoBot(Servos.S4, 45);
+        basic.pause(500);
+        ServoBot(Servos.S1, 0);
+        ServoBot(Servos.S2, 180);
+        basic.pause(500);
+        let i = 0;
+        while (i < 5) {
+            ServoBot(Servos.S3, 90);
+            ServoBot(Servos.S4, 90);
+            basic.pause(500);
+            ServoBot(Servos.S3, 135);
+            ServoBot(Servos.S4, 45);
+            basic.pause(500);
+            i++;
+        }
+        PetRest();
+    }
+
+    function Dance_2() {
+        let i = 0;
+        while (i < 2) {
+            ServoBot(Servos.S1, 0);
+            ServoBot(Servos.S4, 0);
+            basic.pause(500);
+            let j = 0;
+            while (j < 2) {
+                ServoBot(Servos.S2, 90);
+                ServoBot(Servos.S3, 45);
+                basic.pause(500);
+                ServoBot(Servos.S2, 135);
+                ServoBot(Servos.S3, 90);
+                basic.pause(500);
+                j++;
+            }
+            ServoBot(Servos.S1, 90);
+            ServoBot(Servos.S2, 90);
+            ServoBot(Servos.S3, 90);
+            ServoBot(Servos.S4, 90);
+            i++;
+        }
+    }
+
+    function Dance_3() {
+        let i = 0;
+        while (i < 2) {
+            ServoBot(Servos.S2, 180);
+            ServoBot(Servos.S3, 180);
+            basic.pause(500);
+            let j = 0;
+            while (j < 2) {
+                ServoBot(Servos.S1, 90);
+                ServoBot(Servos.S4, 135);
+                basic.pause(500);
+                ServoBot(Servos.S1, 45);
+                ServoBot(Servos.S4, 90);
+                basic.pause(500);
+                j++;
+            }
+            ServoBot(Servos.S1, 90);
+            ServoBot(Servos.S2, 90);
+            ServoBot(Servos.S3, 90);
+            ServoBot(Servos.S4, 90);
+            i++;
+        }
     }
 }
