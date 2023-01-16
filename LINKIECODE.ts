@@ -27,7 +27,9 @@ namespace LINKIECODE {
         //% block="Walk"
         Walk,
         //% block="Dance"
-        Dance
+        Dance,
+        //% block="Tail Whip"
+        TailWhip
     }
 
     export enum BotAction {
@@ -74,6 +76,7 @@ namespace LINKIECODE {
         switch (mode) {
             case ToyMode.RoboticPet:
             PetRest();
+            ServoBot(Servos.S5, 45);
             break;
         }
     }
@@ -110,6 +113,9 @@ namespace LINKIECODE {
                 break;
             case PetAction.Dance:
                 PetDance();
+                break;
+            case PetAction.TailWhip:
+                TailWhip();
                 break;
         }
     }
@@ -380,7 +386,7 @@ namespace LINKIECODE {
     }
 
     function TailWhip() {
-        if (Math.randomBoolean) {
+        if (Math.randomRange(0,1) == 1) {
             let i = 0;
             while (i < 4) {
                 ServoBot(Servos.S5, 20);
@@ -389,6 +395,7 @@ namespace LINKIECODE {
                 basic.pause(200);
                 i++
             }
+            ServoBot(Servos.S5, 45);
         } else {
             basic.pause(1600)
         }
