@@ -4,6 +4,17 @@
 //% color=#5C97BB icon="\uf1e0" block="LINKIECODE"
 
 namespace LINKIECODE {
+    export enum ToyMode {
+        //% block="Boxy Bot"
+        BoxyBot,
+        //% block="Robotic Pet"
+        RoboticPet,
+        //% block="Smart Car"
+        SmartCar,
+        //% block="Smart Home"
+        SmartHome
+    }
+
     export enum PetAction {
         //% block="Rest"
         Rest,
@@ -46,6 +57,24 @@ namespace LINKIECODE {
         Close
     }
 
+    export enum UltrasonicUnit {
+        //% block="μs"
+        MicroSeconds,
+        //% block="cm"
+        Centimeters,
+        //% block="inches"
+        Inches
+    }
+
+
+
+
+    //% block="Calibrate Servo|$first"
+    //% weight=300
+    export function Calibrate(first: ToyMode) {
+
+    }
+
     //% block="Robotic Pet|$first"
     //% weight=180
     export function RoboticPet(first: PetAction){
@@ -68,6 +97,27 @@ namespace LINKIECODE {
     //% weight=100
     export function SmartHome(first: HomeAction) {
         
+    }
+
+    //% blockId=sonar_ping block="Ultrasonic TRIG %trig|ECHO %echo|unit %unit"
+    //% inlineInputMode=inline
+    export function Ultrasonic(trig: DigitalPin, echo: DigitalPin, unit: UltrasonicUnit, maxCmDistance = 500): number {
+        // send pulse
+        pins.setPull(trig, PinPullMode.PullNone);
+        pins.digitalWritePin(trig, 0);
+        control.waitMicros(2);
+        pins.digitalWritePin(trig, 1);
+        control.waitMicros(10);
+        pins.digitalWritePin(trig, 0);
+
+        // read pulse
+        const d = pins.pulseIn(echo, PulseValue.High, maxCmDistance * 58);
+
+        switch (unit) {
+            case UltrasonicUnit.Centimeters: return Math.idiv(d, 58);
+            case UltrasonicUnit.Inches: return Math.idiv(d, 148);
+            default: return d;
+        }
     }
 
     const PCA9685_ADDRESS = 0x40;
