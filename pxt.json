@@ -1,5 +1,5 @@
 {
-    "name": "extension test",
+    "name": "LINKIECODE",
     "description": "",
     "dependencies": {
         "core": "*",
@@ -23,5 +23,5 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "blocksprj"
 }
