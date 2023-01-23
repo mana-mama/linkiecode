@@ -1,5 +1,5 @@
 {
-    "name": "LINKIECODE",
+    "name": "linkiecode",
     "description": "",
     "dependencies": {
         "core": "*",
@@ -23,5 +23,5 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "blocksprj"
+    "preferredEditor": "tsprj"
 }

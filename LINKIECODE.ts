@@ -100,6 +100,20 @@ namespace LINKIECODE {
         S8 = 0x08,
     }
 
+  //% blockId=ServoRotate block="Servo|%index|degree %degree"
+  //% weight=280
+  //% degree.min=0 degree.max=180
+  //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
+    export function ServoRotate(servo: Servos, degree: number) {
+        if (!initializedPCA9685) {
+            initPCA9685();
+        }
+        // 50hz: 20,000 us
+        let v_us = (degree * 1800) / 180 + 600; // 0.6 ~ 2.4
+        let value = (v_us * 4096) / 20000;
+        setPwm(servo + 7, 0, value);
+    }
+
     //% block="Robotic Pet|$action"
     //% weight=180
     export function RoboticPet(action: PetAction){
